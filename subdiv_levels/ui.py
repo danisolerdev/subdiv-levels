@@ -56,6 +56,7 @@ class SCULPTEXT_PT_subdiv(bpy.types.Panel):
             col = body.column()
             col.operator("sculpt_ext.delete_higher", icon='TRASH')
             col.operator("sculpt_ext.apply_base", icon='CHECKMARK')
+            col.operator("sculpt_ext.apply_modifier", icon='FILE_TICK')
             col.separator()
 
             prefs = utils.get_prefs()

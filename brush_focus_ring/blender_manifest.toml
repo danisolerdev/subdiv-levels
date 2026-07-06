@@ -1,0 +1,10 @@
+schema_version = "1.0.0"
+id = "brush_focus_ring"
+version = "0.4.1"
+name = "Brush Focus Ring"
+tagline = "Doble circunferencia de pincel estilo ZBrush: foco e influencia"
+maintainer = "Dani <danielsolerdev@gmail.com>"
+type = "add-on"
+tags = ["Sculpt", "Paint"]
+blender_version_min = "5.0.0"
+license = ["SPDX:GPL-3.0-or-later"]

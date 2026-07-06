@@ -198,6 +198,43 @@ class SCULPTEXT_OT_apply_base(bpy.types.Operator):
         return {'FINISHED'}
 
 
+
+class SCULPTEXT_OT_apply_modifier(bpy.types.Operator):
+    """Fija la malla al nivel actual y elimina el Multires (colapsar)"""
+
+    bl_idname = "sculpt_ext.apply_modifier"
+    bl_label = "Aplicar modificador"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        return _poll_multires(context)
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_confirm(self, event)
+
+    def execute(self, context):
+        obj = context.object
+        mod = utils.get_multires(obj)
+        # modifier_apply usa el nivel de viewport: alinearlo con el de sculpt.
+        mod.levels = mod.sculpt_levels
+        previous_mode = obj.mode
+        if previous_mode != 'OBJECT':
+            bpy.ops.object.mode_set(mode='OBJECT')
+        try:
+            result = bpy.ops.object.modifier_apply(modifier=mod.name)
+        except RuntimeError as error:
+            self.report({'WARNING'}, f"No se pudo aplicar el modificador: {error}")
+            result = {'CANCELLED'}
+        if previous_mode != 'OBJECT':
+            bpy.ops.object.mode_set(mode=previous_mode)
+        if 'FINISHED' not in result:
+            return {'CANCELLED'}
+        _redraw(context)
+        self.report({'INFO'}, "Multires aplicado: la malla queda fija en el nivel actual")
+        return {'FINISHED'}
+
+
 classes = (
     SCULPTEXT_OT_subdiv_smart,
     SCULPTEXT_OT_level_up,
@@ -205,6 +242,7 @@ classes = (
     SCULPTEXT_OT_level_set,
     SCULPTEXT_OT_delete_higher,
     SCULPTEXT_OT_apply_base,
+    SCULPTEXT_OT_apply_modifier,
 )
 
 
