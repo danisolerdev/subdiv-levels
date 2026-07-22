@@ -1,0 +1,10 @@
+schema_version = "1.0.0"
+id = "sculpt_subtools"
+version = "0.2.3"
+name = "Sculpt Subtools"
+tagline = "Paleta de subtools estilo ZBrush para Sculpt"
+maintainer = "Dani <danielsolerdev@gmail.com>"
+type = "add-on"
+tags = ["Sculpt", "Mesh"]
+blender_version_min = "5.0.0"
+license = ["SPDX:GPL-3.0-or-later"]
