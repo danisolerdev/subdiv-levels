@@ -7,7 +7,7 @@ Exterior = límite de influencia (tamaño del pincel).
 import bpy
 from bpy.props import FloatProperty
 
-from . import draw, keymaps, operators, preferences, ui, utils
+from . import draw, keymaps, operators, preferences, translations, ui, utils
 
 _modules = (preferences, operators, ui)
 
@@ -18,9 +18,10 @@ def _on_focus_update(self, context):
 
 
 def register():
+    translations.register()
     bpy.types.Scene.bfr_focus = FloatProperty(
-        name="Foco",
-        description="Radio del círculo central (foco) como fracción del exterior",
+        name="Focus",
+        description="Radius of the central circle (focus) as a fraction of the outer one",
         min=0.0,
         max=1.0,
         default=0.5,
@@ -44,3 +45,4 @@ def unregister():
         for cls in reversed(module.classes):
             bpy.utils.unregister_class(cls)
     del bpy.types.Scene.bfr_focus
+    translations.unregister()

@@ -1,6 +1,6 @@
 schema_version = "1.0.0"
 id = "brush_focus_ring"
-version = "0.6.0"
+version = "0.7.4"
 name = "Brush Focus Ring"
 tagline = "Doble circunferencia de pincel estilo ZBrush: foco e influencia"
 maintainer = "Dani <danielsolerdev@gmail.com>"

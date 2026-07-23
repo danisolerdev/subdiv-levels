@@ -55,6 +55,23 @@ def get_brush_radius_px(context, paint, brush) -> int:
     return brush.size
 
 
+def get_brush_strength(context, paint, brush) -> float:
+    """Fuerza del pincel, respetando Unified Paint Settings."""
+    ups = _get_unified_settings(context, paint)
+    if ups is not None and getattr(ups, "use_unified_strength", False):
+        return ups.strength
+    return brush.strength
+
+
+def set_brush_strength(context, paint, brush, value: float):
+    """Escribe la fuerza donde toque (unificada o del pincel)."""
+    ups = _get_unified_settings(context, paint)
+    if ups is not None and getattr(ups, "use_unified_strength", False):
+        ups.strength = value
+    else:
+        brush.strength = value
+
+
 def get_focus(context, brush) -> float:
     """Foco efectivo: la dureza (hardness) real del pincel activo.
 
