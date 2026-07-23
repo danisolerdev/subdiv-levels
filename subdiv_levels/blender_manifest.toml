@@ -1,6 +1,6 @@
 schema_version = "1.0.0"
 id = "subdiv_levels"
-version = "0.2.0"
+version = "0.3.0"
 name = "Subdiv Levels"
 tagline = "Niveles de subdivision estilo ZBrush/Nomad para Sculpt"
 maintainer = "Dani <danielsolerdev@gmail.com>"

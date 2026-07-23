@@ -4,9 +4,9 @@ Extensión (Blender 4.2+ / 5.x): los metadatos viven en blender_manifest.toml,
 no se usa bl_info.
 """
 
-from . import preferences, operators, ui, keymaps
+from . import translations, preferences, operators, ui, keymaps
 
-_modules = (preferences, operators, ui, keymaps)
+_modules = (translations, preferences, operators, ui, keymaps)
 
 
 def register():

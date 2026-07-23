@@ -1,6 +1,7 @@
 """Operadores del addon Subdiv Levels (prefijo sculpt_ext.*)."""
 
 import bpy
+from bpy.app.translations import pgettext_rpt as rpt_
 from bpy.props import IntProperty
 
 from . import utils
@@ -24,10 +25,10 @@ def _redraw(context):
 
 
 class SCULPTEXT_OT_subdiv_smart(bpy.types.Operator):
-    """Sube de nivel; crea el modificador o un nivel nuevo si hace falta (Ctrl+D)"""
+    """Go up a level; creates the modifier or a new level if needed (Ctrl+D)"""
 
     bl_idname = "sculpt_ext.subdiv_smart"
-    bl_label = "Subdividir (inteligente)"
+    bl_label = "Smart Subdivide"
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
@@ -47,14 +48,16 @@ class SCULPTEXT_OT_subdiv_smart(bpy.types.Operator):
         if mod.sculpt_levels < mod.total_levels:
             level = utils.set_level(obj, mod, mod.sculpt_levels + 1, prefs)
             _redraw(context)
-            self.report({'INFO'}, f"Nivel {level} / {mod.total_levels}")
+            self.report({'INFO'}, rpt_("Level {} / {}").format(level, mod.total_levels))
             return {'FINISHED'}
 
         if mod.sculpt_levels >= prefs.max_auto_level:
             self.report(
                 {'WARNING'},
-                f"Límite de seguridad: nivel {mod.sculpt_levels} ≥ máximo "
-                f"automático ({prefs.max_auto_level}). Súbelo en las preferencias.",
+                rpt_(
+                    "Safety limit: level {} ≥ automatic maximum ({}). "
+                    "Raise it in the preferences."
+                ).format(mod.sculpt_levels, prefs.max_auto_level),
             )
             return {'CANCELLED'}
 
@@ -66,19 +69,21 @@ class SCULPTEXT_OT_subdiv_smart(bpy.types.Operator):
             modifier=mod.name, mode=prefs.subdivision_mode
         )
         if 'FINISHED' not in result:
-            self.report({'WARNING'}, "No se pudo subdividir el modificador")
+            self.report({'WARNING'}, rpt_("Could not subdivide the modifier"))
             return {'CANCELLED'}
         level = utils.set_level(obj, mod, mod.total_levels, prefs)
         _redraw(context)
-        self.report({'INFO'}, f"Nivel {level} / {mod.total_levels} (nuevo)")
+        self.report(
+            {'INFO'}, rpt_("Level {} / {} (new)").format(level, mod.total_levels)
+        )
         return {'FINISHED'}
 
 
 class SCULPTEXT_OT_level_up(bpy.types.Operator):
-    """Sube un nivel de subdivisión sin crear niveles nuevos (Alt+D)"""
+    """Goes up one subdivision level without creating new levels (Alt+D)"""
 
     bl_idname = "sculpt_ext.level_up"
-    bl_label = "Subir nivel"
+    bl_label = "Level Up"
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
@@ -89,19 +94,22 @@ class SCULPTEXT_OT_level_up(bpy.types.Operator):
         obj = context.object
         mod = utils.get_multires(obj)
         if mod.sculpt_levels >= mod.total_levels:
-            self.report({'INFO'}, f"Ya estás en el nivel máximo ({mod.total_levels})")
+            self.report(
+                {'INFO'},
+                rpt_("Already at the maximum level ({})").format(mod.total_levels),
+            )
             return {'CANCELLED'}
         level = utils.set_level(obj, mod, mod.sculpt_levels + 1)
         _redraw(context)
-        self.report({'INFO'}, f"Nivel {level} / {mod.total_levels}")
+        self.report({'INFO'}, rpt_("Level {} / {}").format(level, mod.total_levels))
         return {'FINISHED'}
 
 
 class SCULPTEXT_OT_level_down(bpy.types.Operator):
-    """Baja un nivel de subdivisión sin destruir nada (Shift+D)"""
+    """Goes down one subdivision level without destroying anything (Shift+D)"""
 
     bl_idname = "sculpt_ext.level_down"
-    bl_label = "Bajar nivel"
+    bl_label = "Level Down"
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
@@ -112,22 +120,22 @@ class SCULPTEXT_OT_level_down(bpy.types.Operator):
         obj = context.object
         mod = utils.get_multires(obj)
         if mod.sculpt_levels <= 0:
-            self.report({'INFO'}, "Ya estás en el nivel base (0)")
+            self.report({'INFO'}, rpt_("Already at the base level (0)"))
             return {'CANCELLED'}
         level = utils.set_level(obj, mod, mod.sculpt_levels - 1)
         _redraw(context)
-        self.report({'INFO'}, f"Nivel {level} / {mod.total_levels}")
+        self.report({'INFO'}, rpt_("Level {} / {}").format(level, mod.total_levels))
         return {'FINISHED'}
 
 
 class SCULPTEXT_OT_level_set(bpy.types.Operator):
-    """Fija el nivel de subdivisión exacto"""
+    """Sets the exact subdivision level"""
 
     bl_idname = "sculpt_ext.level_set"
-    bl_label = "Fijar nivel"
+    bl_label = "Set Level"
     bl_options = {'REGISTER', 'UNDO'}
 
-    level: IntProperty(name="Nivel", default=0, min=0)
+    level: IntProperty(name="Level", default=0, min=0)
 
     @classmethod
     def poll(cls, context):
@@ -138,15 +146,15 @@ class SCULPTEXT_OT_level_set(bpy.types.Operator):
         mod = utils.get_multires(obj)
         level = utils.set_level(obj, mod, self.level)
         _redraw(context)
-        self.report({'INFO'}, f"Nivel {level} / {mod.total_levels}")
+        self.report({'INFO'}, rpt_("Level {} / {}").format(level, mod.total_levels))
         return {'FINISHED'}
 
 
 class SCULPTEXT_OT_delete_higher(bpy.types.Operator):
-    """Borra los niveles de subdivisión por encima del actual"""
+    """Deletes the subdivision levels above the current one"""
 
     bl_idname = "sculpt_ext.delete_higher"
-    bl_label = "Borrar niveles superiores"
+    bl_label = "Delete Higher Levels"
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
@@ -164,19 +172,22 @@ class SCULPTEXT_OT_delete_higher(bpy.types.Operator):
         mod.levels = mod.sculpt_levels
         result = bpy.ops.object.multires_higher_levels_delete(modifier=mod.name)
         if 'FINISHED' not in result:
-            self.report({'WARNING'}, "No se pudieron borrar los niveles superiores")
+            self.report({'WARNING'}, rpt_("Could not delete the higher levels"))
             return {'CANCELLED'}
         utils.set_level(obj, mod, mod.total_levels)
         _redraw(context)
-        self.report({'INFO'}, f"Niveles superiores borrados ({mod.total_levels} restantes)")
+        self.report(
+            {'INFO'},
+            rpt_("Higher levels deleted ({} remaining)").format(mod.total_levels),
+        )
         return {'FINISHED'}
 
 
 class SCULPTEXT_OT_apply_base(bpy.types.Operator):
-    """Aplica el desplazamiento del nivel actual a la malla base"""
+    """Applies the current level's displacement to the base mesh"""
 
     bl_idname = "sculpt_ext.apply_base"
-    bl_label = "Aplicar base"
+    bl_label = "Apply Base"
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
@@ -191,19 +202,19 @@ class SCULPTEXT_OT_apply_base(bpy.types.Operator):
         mod = utils.get_multires(obj)
         result = bpy.ops.object.multires_base_apply(modifier=mod.name)
         if 'FINISHED' not in result:
-            self.report({'WARNING'}, "No se pudo aplicar la base")
+            self.report({'WARNING'}, rpt_("Could not apply the base"))
             return {'CANCELLED'}
         _redraw(context)
-        self.report({'INFO'}, "Desplazamiento aplicado a la malla base")
+        self.report({'INFO'}, rpt_("Displacement applied to the base mesh"))
         return {'FINISHED'}
 
 
 
 class SCULPTEXT_OT_apply_modifier(bpy.types.Operator):
-    """Fija la malla al nivel actual y elimina el Multires (colapsar)"""
+    """Fixes the mesh at the current level and removes the Multires (collapse)"""
 
     bl_idname = "sculpt_ext.apply_modifier"
-    bl_label = "Aplicar modificador"
+    bl_label = "Apply Modifier"
     bl_options = {'REGISTER', 'UNDO'}
 
     @classmethod
@@ -224,14 +235,18 @@ class SCULPTEXT_OT_apply_modifier(bpy.types.Operator):
         try:
             result = bpy.ops.object.modifier_apply(modifier=mod.name)
         except RuntimeError as error:
-            self.report({'WARNING'}, f"No se pudo aplicar el modificador: {error}")
+            self.report(
+                {'WARNING'}, rpt_("Could not apply the modifier: {}").format(error)
+            )
             result = {'CANCELLED'}
         if previous_mode != 'OBJECT':
             bpy.ops.object.mode_set(mode=previous_mode)
         if 'FINISHED' not in result:
             return {'CANCELLED'}
         _redraw(context)
-        self.report({'INFO'}, "Multires aplicado: la malla queda fija en el nivel actual")
+        self.report(
+            {'INFO'}, rpt_("Multires applied: the mesh is now fixed at the current level")
+        )
         return {'FINISHED'}
 
 

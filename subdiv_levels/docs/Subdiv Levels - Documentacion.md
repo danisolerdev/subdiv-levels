@@ -1,7 +1,7 @@
 # Subdiv Levels — Addon para Blender
 
 > Niveles de subdivisión estilo ZBrush / Nomad Sculpt para el modo Sculpt de Blender.
-> Versión **0.1.0** · Blender **5.0+** · Licencia GPL-3.0-or-later
+> Versión **0.3.0** · Blender **5.0+** · Licencia GPL-3.0-or-later
 
 ---
 
@@ -15,7 +15,7 @@ El addon **no reimplementa la subdivisión**: orquesta el modificador Multires n
 
 ## Instalación
 
-1. Localiza el zip: `dist\subdiv_levels-0.1.0.zip` (dentro de la carpeta del proyecto `addonBlender`).
+1. Localiza el zip: `dist\subdiv_levels-0.3.0.zip` (dentro de la carpeta del proyecto `addonBlender`).
 2. En Blender: **Edit → Preferences → Get Extensions**.
 3. Flecha desplegable (esquina superior derecha) → **Install from Disk…**
 4. Selecciona el zip. Se instala y activa automáticamente.

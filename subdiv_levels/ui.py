@@ -1,6 +1,7 @@
 """Panel lateral (N) del addon Subdiv Levels."""
 
 import bpy
+from bpy.app.translations import pgettext_iface as iface_
 
 from . import utils
 
@@ -20,7 +21,7 @@ class SCULPTEXT_PT_subdiv(bpy.types.Panel):
         obj = context.object
 
         if obj is None or obj.type != 'MESH':
-            layout.label(text="Selecciona una malla", icon='INFO')
+            layout.label(text="Select a mesh", icon='INFO')
             return
 
         mod = utils.get_multires(obj)
@@ -29,7 +30,7 @@ class SCULPTEXT_PT_subdiv(bpy.types.Panel):
             col = layout.column()
             col.scale_y = 1.5
             col.operator(
-                "sculpt_ext.subdiv_smart", text="Añadir Multires", icon='MOD_MULTIRES'
+                "sculpt_ext.subdiv_smart", text="Add Multires", icon='MOD_MULTIRES'
             )
             return
 
@@ -38,7 +39,7 @@ class SCULPTEXT_PT_subdiv(bpy.types.Panel):
 
         # Nivel actual + botones − / +
         row = layout.row(align=True)
-        row.label(text=f"Nivel {level} / {total}")
+        row.label(text=iface_("Level {} / {}").format(level, total), translate=False)
         row.operator("sculpt_ext.level_down", text="", icon='REMOVE')
         row.operator("sculpt_ext.level_up", text="", icon='ADD')
 
@@ -46,12 +47,12 @@ class SCULPTEXT_PT_subdiv(bpy.types.Panel):
         col = layout.column()
         col.scale_y = 1.4
         col.operator(
-            "sculpt_ext.subdiv_smart", text="Subdividir (Ctrl+D)", icon='MOD_MULTIRES'
+            "sculpt_ext.subdiv_smart", text="Subdivide (Ctrl+D)", icon='MOD_MULTIRES'
         )
 
         # Caja plegable "Avanzado"
         header, body = layout.panel("sculpt_ext_advanced", default_closed=True)
-        header.label(text="Avanzado")
+        header.label(text="Advanced")
         if body is not None:
             col = body.column()
             col.operator("sculpt_ext.delete_higher", icon='TRASH')
@@ -61,7 +62,7 @@ class SCULPTEXT_PT_subdiv(bpy.types.Panel):
 
             prefs = utils.get_prefs()
             if utils.prefs_are_real(prefs):
-                col.prop(prefs, "subdivision_mode", text="Modo")
+                col.prop(prefs, "subdivision_mode", text="Mode")
             col.separator()
 
             col.prop(mod, "levels", text="Viewport")
@@ -71,7 +72,10 @@ class SCULPTEXT_PT_subdiv(bpy.types.Panel):
 
         # Pie: recuento de caras estimado
         faces = utils.estimate_faces(obj, level)
-        layout.label(text=f"Caras (aprox.): {utils.format_faces(faces)}")
+        layout.label(
+            text=iface_("Faces (approx.): {}").format(utils.format_faces(faces)),
+            translate=False,
+        )
 
 
 classes = (
