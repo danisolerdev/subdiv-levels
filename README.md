@@ -1,5 +1,7 @@
 # Blender Sculpt Addons
 
+### ⬇️ [Descargar los addons (última Release)](https://github.com/danisolerdev/blender-sculpt-addons/releases/latest)
+
 Colección de **extensiones para Blender 5.x** que llevan al modo Sculpt flujos de trabajo de
 **ZBrush / Nomad Sculpt** que Blender no ofrece de serie: niveles de subdivisión, paleta de
 subtools y anillo doble de pincel.
